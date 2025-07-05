@@ -32,8 +32,8 @@ public class HomeController {
         return ResponseEntity.ok(userService.login(user));
     }
 
-    @PostMapping("upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping("/upload")
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws Exception {
 
         String response=modelService.sendDishClassifier(file);
         return ResponseEntity.ok(response);

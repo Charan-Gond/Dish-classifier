@@ -17,7 +17,7 @@ import java.io.IOException;
 @Service
 public class ModelService {
 
-    public String sendDishClassifier(MultipartFile imageFile) throws IOException {
+    public String sendDishClassifier(MultipartFile imageFile) throws Exception {
 
         String url="http://127.0.0.1:8000/predict";
 
@@ -26,23 +26,26 @@ public class ModelService {
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
+        try {
+            ByteArrayResource fileAsResource = new ByteArrayResource(imageFile.getBytes()) {
 
-        ByteArrayResource fileAsResource=new ByteArrayResource(imageFile.getBytes()){
+                @Override
+                public String getFilename() {
+                    return imageFile.getOriginalFilename();
+                }
+            };
 
-            @Override
-            public String getFilename() {
-                return imageFile.getOriginalFilename();
-            }
-        };
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", fileAsResource);
 
-        MultiValueMap<String,Object> body=new LinkedMultiValueMap<>();
-        body.add("file",fileAsResource);
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        HttpEntity<MultiValueMap<String,Object>> requestEntity=new HttpEntity<>(body,headers);
-
-        ResponseEntity<String> response=restTemplate.postForEntity(url,requestEntity,String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
 
-        return response.getBody();
+            return response.getBody();
+        }catch (Exception e){
+            throw new Exception(" model is not working try again");
+        }
     }
 }
