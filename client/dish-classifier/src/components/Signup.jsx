@@ -12,7 +12,7 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/signup', { name, email, password });
+      const res = await axios.post('/register', { name, email, password });
       localStorage.setItem('apiKey', res.data.apiKey);
       navigate('/home');
     } catch (err) {
